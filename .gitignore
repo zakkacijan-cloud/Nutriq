@@ -1,0 +1,6 @@
+# Generated design-review screenshots
+nutriq-*.png
+
+# Local editor and operating-system files
+.DS_Store
+Thumbs.db

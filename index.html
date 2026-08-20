@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#103d2b">
+  <meta name="description" content="Nutriq — your smart food and nutrition assistant.">
+  <title>Nutriq — Eat smarter.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing.css">
+  <style>
+    /* Desktop polish: the compact mobile presentation continues to use landing.css. */
+    @media (min-width: 721px) {
+      body {
+        background:
+          radial-gradient(circle at 7% 6%, rgba(204, 255, 93, .22), transparent 23rem),
+          radial-gradient(circle at 92% 22%, rgba(203, 235, 195, .65), transparent 27rem),
+          #f8faf5;
+      }
+
+      .landing-page { padding: 0 34px 34px; }
+
+      .landing-nav {
+        width: min(1240px, 100%);
+        min-height: 86px;
+        margin: 0 auto;
+        padding: 0 2px;
+      }
+
+      .brand { letter-spacing: -.04em; }
+
+      .nav-signin {
+        min-height: 44px;
+        padding: 0 17px;
+        border: 1px solid #d6e2d2;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, .84);
+        box-shadow: 0 5px 18px rgba(18, 59, 42, .06);
+        transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+      }
+
+      .nav-signin:hover {
+        transform: translateY(-2px);
+        border-color: #a9c2a5;
+        box-shadow: 0 9px 22px rgba(18, 59, 42, .10);
+      }
+
+      .hero {
+        width: min(1240px, 100%);
+        min-height: 650px;
+        margin: 8px auto 28px;
+        padding: 60px 68px 54px;
+        display: grid;
+        grid-template-columns: minmax(0, .95fr) minmax(480px, 1.05fr);
+        align-items: center;
+        gap: 44px;
+        border: 1px solid rgba(208, 223, 202, .8);
+        border-radius: 36px;
+        background: rgba(255, 255, 255, .68);
+        box-shadow: 0 22px 70px rgba(25, 67, 47, .08);
+        overflow: hidden;
+      }
+
+      .hero-copy { max-width: 525px; }
+
+      .hero h1 {
+        font-size: clamp(3.7rem, 5.4vw, 5.7rem);
+        line-height: .98;
+        letter-spacing: -.075em;
+      }
+
+      .hero-text {
+        max-width: 460px;
+        font-size: 1.08rem;
+        line-height: 1.65;
+      }
+
+      .hero-actions { align-items: center; }
+
+      .primary-cta {
+        min-height: 54px;
+        padding: 0 22px;
+        box-shadow: 0 12px 22px rgba(16, 61, 43, .17);
+      }
+
+      .primary-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 27px rgba(16, 61, 43, .23); }
+
+      .secondary-cta { padding: 10px 0; }
+
+      .social-proof {
+        margin-top: 34px;
+        padding-top: 23px;
+        border-top: 1px solid #dfe8db;
+      }
+
+      .hero-visual {
+        min-height: 536px;
+        margin: -12px -34px -12px 0;
+        border-radius: 29px;
+        background: linear-gradient(145deg, #eaf5e4 0%, #dcefd5 55%, #cce9c4 100%);
+        box-shadow: inset 0 1px rgba(255,255,255,.8), 0 20px 45px rgba(33, 83, 54, .09);
+      }
+
+      .phone { transform: translateY(8px) rotate(-2deg); box-shadow: 0 26px 45px rgba(18, 52, 37, .23); }
+      .recipe-float { transform: translate(-10px, -3px); }
+      .score-float { transform: translate(6px, 8px); }
+
+      .feature-strip {
+        width: min(1240px, 100%);
+        margin: 0 auto;
+        border: 1px solid rgba(42, 81, 60, .12);
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(16, 61, 43, .10);
+      }
+
+      .feature-strip > div { min-height: 94px; }
+    }
+  </style>
+  <style>
+    /* New wide-screen landing experience, matched to the dashboard workspace. */
+    @media (min-width: 721px) {
+      body {
+        min-height:100vh;
+        background:
+          radial-gradient(circle at 95% 5%, rgba(209,246,132,.32), transparent 26rem),
+          #f3f6f0;
+      }
+
+      .landing-page { max-width:1500px; margin:0 auto; padding:20px 30px 34px; }
+      .landing-nav {
+        width:100%;
+        min-height:70px;
+        padding:0 17px;
+        border:1px solid #e0e8dc;
+        border-radius:18px;
+        background:rgba(255,255,255,.86);
+        box-shadow:0 8px 22px rgba(24,60,43,.045);
+      }
+      .brand { color:#143c2d; }
+      .brand-mark { background:#143c2d; color:#d7fa73; }
+      .nav-signin { border:0; border-radius:11px; background:#143c2d; color:#fff; box-shadow:none; }
+      .nav-signin:hover { background:#215640; border-color:transparent; box-shadow:0 9px 18px rgba(20,60,43,.16); }
+
+      .hero {
+        width:100%;
+        min-height:645px;
+        margin:18px 0 23px;
+        padding:62px 66px;
+        grid-template-columns:minmax(0,.96fr) minmax(490px,1.04fr);
+        gap:48px;
+        border:0;
+        border-radius:32px;
+        background:
+          radial-gradient(circle at 18% 105%, rgba(210,247,123,.13) 0 14rem, transparent 14.2rem),
+          linear-gradient(120deg,#143c2d 0%,#0d3024 100%);
+        box-shadow:0 24px 48px rgba(18,54,39,.15);
+      }
+      .hero-copy { max-width:510px; }
+      .eyebrow { color:#c9f57a; }
+      .hero h1 { color:#fff; font-size:clamp(4rem,5.7vw,6rem); letter-spacing:-.078em; }
+      .hero h1 em { color:#d4fa72; }
+      .hero-text { max-width:440px; color:#c1d5c9; font-size:1.08rem; }
+      .primary-cta { min-height:55px; border-radius:14px; background:#d4fa72; color:#143c2d; box-shadow:none; }
+      .primary-cta:hover { background:#e2ff9a; box-shadow:0 12px 20px rgba(0,0,0,.14); }
+      .secondary-cta { color:#e2eee6; }
+      .secondary-cta:hover { color:#d4fa72; }
+      .social-proof { border-top-color:rgba(226,244,231,.18); }
+      .social-proof p { color:#b9ccbf; }
+      .social-proof p strong { color:#fff; }
+
+      .hero-visual {
+        min-height:520px;
+        margin:-4px -26px -4px 0;
+        border:1px solid rgba(231,255,210,.16);
+        border-radius:27px;
+        background:
+          radial-gradient(circle at 50% 53%, rgba(206,247,113,.32) 0 10rem, transparent 10.2rem),
+          linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.05));
+        box-shadow:none;
+      }
+      .leaf { opacity:.68; }
+      .phone { transform:translateY(10px) rotate(-2.2deg); border-color:#f8fff4; box-shadow:0 28px 48px rgba(0,0,0,.26); }
+      .recipe-float { transform:translate(-12px,3px); }
+      .score-float { transform:translate(5px,8px); }
+
+      .feature-strip {
+        width:100%;
+        min-height:112px;
+        margin:0;
+        border:1px solid #e0e8dc;
+        border-radius:22px;
+        background:#fff;
+        box-shadow:0 12px 26px rgba(24,60,43,.045);
+      }
+      .feature-strip > div { min-height:110px; }
+      .feature-strip > div + div { border-left-color:#e6ede3; }
+      .feature-strip > div > span { width:40px; height:40px; border-radius:12px; background:#eff8e7; color:#38662b; }
+      .feature-strip b { color:#153d2d; }
+      .feature-strip small { color:#748579; }
+    }
+  </style>
+  <style>
+    :root{--nutriq-accent:#8BC34A;--nutriq-accent-hover:#A4D65E;--nutriq-light-bg:#F7F9F5;--nutriq-light-card:#FFFFFF;--nutriq-light-soft:#EEF3EA;--nutriq-light-text:#172017;--nutriq-light-muted:#687168;--nutriq-light-border:#DCE4D8}
+    body{background:var(--nutriq-light-bg);color:var(--nutriq-light-text)}.landing-nav,.feature-strip{border-color:var(--nutriq-light-border);background:var(--nutriq-light-card)}.brand{color:var(--nutriq-light-text)}.brand-mark{background:var(--nutriq-light-text);color:var(--nutriq-accent)}.nav-signin{background:var(--nutriq-accent);color:var(--nutriq-light-text)}.nav-signin:hover{background:var(--nutriq-accent-hover)}.hero h1 em{color:var(--nutriq-accent)}.primary-cta{background:var(--nutriq-accent);color:var(--nutriq-light-text)}.primary-cta:hover{background:var(--nutriq-accent-hover)}
+  </style>
+</head>
+<body>
+  <main class="landing-page">
+    <nav class="landing-nav">
+      <a class="brand" href="index.html" aria-label="Nutriq home"><span class="brand-mark">N<span></span></span><span>NUTRIQ</span></a>
+      <a class="nav-signin" href="main.html?auth=signin">Sign in <span>→</span></a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">YOUR SMART FOOD COMPANION</p>
+        <h1>Eat smarter.<br><em>Feel better.</em></h1>
+        <p class="hero-text">Nutriq makes healthy eating simple with personalised recipes, nutrition insights, and meal plans built around you.</p>
+        <div class="hero-actions">
+          <a class="primary-cta" href="main.html?auth=create">Create an account <span>→</span></a>
+        <a class="secondary-cta" href="main.html?auth=signin">I already have an account</a>
+      </div>
+        <div class="social-proof"><div class="faces"><span>J</span><span>A</span><span>M</span><span>S</span></div><p><strong>15,000+ smarter eaters</strong><br>are building better habits with Nutriq.</p></div>
+      </div>
+
+      <div class="hero-visual" aria-label="Nutriq nutrition app preview">
+        <div class="leaf leaf-one"></div><div class="leaf leaf-two"></div><div class="orb"></div>
+        <div class="phone">
+          <div class="speaker"></div>
+          <div class="phone-content">
+            <div class="phone-head"><span class="mini-logo">N</span><span>Tuesday, August 18</span><i>•••</i></div>
+            <p class="mini-label">TODAY'S NUTRITION</p><h2>1,420 <small>kcal</small></h2>
+            <div class="progress"><span></span></div><p class="mini-muted">680 kcal remaining</p>
+            <div class="mini-card"><div class="ring">68%</div><div><b>You're on track</b><small>for a balanced day</small></div><span>→</span></div>
+            <p class="mini-label meals-label">UP NEXT</p>
+            <div class="meal-preview"><div>🥗</div><span><b>Miso salmon bowl</b><small>Lunch · 610 kcal</small></span><i>›</i></div>
+            <div class="phone-tabs"><span class="selected">⌂</span><span>♧</span><span class="spark">✦</span><span>♡</span></div>
+          </div>
+        </div>
+        <div class="float-card recipe-float"><span>✦</span><div><b>AI Chef</b><small>Ideas from your kitchen</small></div></div>
+        <div class="float-card score-float"><b>4.9</b><span>★</span><small>recipe rating</small></div>
+      </div>
+    </section>
+
+    <section class="feature-strip">
+      <div><span>✦</span><p><b>Smart recipes</b><small>Made for your taste</small></p></div>
+      <div><span>◌</span><p><b>Nutrition clarity</b><small>Know what fuels you</small></p></div>
+      <div><span>✓</span><p><b>Easy planning</b><small>One week at a time</small></p></div>
+    </section>
+  </main>
+  <script src="landing.js"></script>
+</body>
+</html>
