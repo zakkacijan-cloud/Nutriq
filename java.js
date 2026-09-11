@@ -2,8 +2,87 @@ const sidebar=document.getElementById('sidebar'),overlay=document.getElementById
 const auth=document.getElementById('authScreen'),form=document.getElementById('authForm'),authTitle=document.getElementById('authTitle'),authKicker=document.getElementById('authKicker'),authCopy=document.getElementById('authCopy'),authSubmit=document.getElementById('authSubmit'),authSwitch=document.getElementById('authSwitch');
 const profileSetup=document.getElementById('profileSetup'),calorieGoalInput=document.createElement('input');calorieGoalInput.id='calorieGoalInput';calorieGoalInput.type='number';calorieGoalInput.min='800';calorieGoalInput.max='10000';calorieGoalInput.step='50';calorieGoalInput.value='2100';calorieGoalInput.placeholder='e.g. 2100';const calorieGoalLabel=document.createElement('label');calorieGoalLabel.textContent='How many calories would you like to eat each day?';calorieGoalLabel.append(calorieGoalInput);profileSetup.append(calorieGoalLabel);const profileQuestions=[document.getElementById('genderInput'),document.getElementById('gymDaysInput'),document.getElementById('mainGoalInput'),document.getElementById('dietInput')],profileCreationFields=[...profileQuestions,calorieGoalInput];
 const profileSelectControls=[];
-function closeProfileSelects(except){profileSelectControls.forEach(control=>{if(control!==except)control.wrapper.classList.remove('open')})}
-function enhanceProfileSelect(select){const wrapper=document.createElement('div'),trigger=document.createElement('button'),options=document.createElement('div');wrapper.className='custom-select';trigger.type='button';trigger.className='custom-select-trigger';trigger.setAttribute('aria-haspopup','listbox');options.className='custom-select-options';options.setAttribute('role','listbox');select.before(wrapper);wrapper.append(select,trigger,options);const update=()=>{const selected=select.options[select.selectedIndex];trigger.innerHTML=`<span>${selected?.textContent||'Select an option'}</span><i>⌄</i>`;trigger.classList.toggle('has-value',Boolean(select.value))};[...select.options].filter(option=>option.value).forEach(option=>{const button=document.createElement('button');button.type='button';button.setAttribute('role','option');button.textContent=option.textContent;button.addEventListener('click',()=>{select.value=option.value;select.dispatchEvent(new Event('change',{bubbles:true}));wrapper.classList.remove('open');update();trigger.focus()});options.append(button)});trigger.addEventListener('click',()=>{if(trigger.disabled)return;const willOpen=!wrapper.classList.contains('open');closeProfileSelects(wrapper);wrapper.classList.toggle('open',willOpen)});select.addEventListener('change',update);update();const control={select,wrapper,trigger};profileSelectControls.push(control);return control}
+function closeProfileSelects(except){profileSelectControls.forEach(control=>{if(control!==except){control.wrapper.classList.remove('open');control.trigger.setAttribute('aria-expanded','false')}})}
+function enhanceProfileSelect(select){
+  const wrapper=document.createElement('div'),trigger=document.createElement('button'),options=document.createElement('div');
+  wrapper.className='custom-select';
+  trigger.type='button';
+  trigger.className='custom-select-trigger';
+  trigger.setAttribute('aria-haspopup','listbox');
+  trigger.setAttribute('aria-expanded','false');
+  options.className='custom-select-options';
+  options.setAttribute('role','listbox');
+  select.before(wrapper);
+  wrapper.append(select,trigger,options);
+
+  const scrollOptionsIntoView=()=>{
+    if(window.innerWidth>760)return;
+    requestAnimationFrame(()=>{
+      const panelRect=auth.getBoundingClientRect();
+      const triggerRect=trigger.getBoundingClientRect();
+      const optionsRect=options.getBoundingClientRect();
+      const visibleTop=panelRect.top+16;
+      const visibleBottom=panelRect.bottom-16;
+      const groupTop=Math.min(triggerRect.top,optionsRect.top);
+      const groupBottom=Math.max(triggerRect.bottom,optionsRect.bottom);
+      const groupHeight=groupBottom-groupTop;
+      const visibleHeight=visibleBottom-visibleTop;
+      let delta=0;
+
+      if(groupHeight<=visibleHeight){
+        delta=(groupTop+groupBottom)/2-(visibleTop+visibleBottom)/2;
+      }else if(groupBottom>visibleBottom){
+        delta=groupBottom-visibleBottom;
+      }else if(groupTop<visibleTop){
+        delta=groupTop-visibleTop;
+      }
+
+      auth.scrollTo({top:Math.max(0,auth.scrollTop+delta),behavior:'smooth'});
+    });
+  };
+  const keepFormPosition=()=>{
+    const position=auth.scrollTop;
+    requestAnimationFrame(()=>{auth.scrollTop=position});
+  };
+  const update=()=>{
+    const selected=select.options[select.selectedIndex];
+    trigger.innerHTML=`<span>${selected?.textContent||'Select an option'}</span><i>⌄</i>`;
+    trigger.classList.toggle('has-value',Boolean(select.value));
+    options.querySelectorAll('[role="option"]').forEach(button=>button.setAttribute('aria-selected',String(button.dataset.value===select.value)));
+  };
+
+  [...select.options].filter(option=>option.value).forEach(option=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.dataset.value=option.value;
+    button.setAttribute('role','option');
+    button.textContent=option.textContent;
+    button.addEventListener('pointerdown',event=>event.preventDefault());
+    button.addEventListener('click',()=>{
+      keepFormPosition();
+      select.value=option.value;
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      wrapper.classList.remove('open');
+      trigger.setAttribute('aria-expanded','false');
+      update();
+    });
+    options.append(button);
+  });
+
+  trigger.addEventListener('click',()=>{
+    if(trigger.disabled)return;
+    const willOpen=!wrapper.classList.contains('open');
+    closeProfileSelects(wrapper);
+    wrapper.classList.toggle('open',willOpen);
+    trigger.setAttribute('aria-expanded',String(willOpen));
+    if(willOpen)scrollOptionsIntoView();
+  });
+  select.addEventListener('change',update);
+  update();
+  const control={select,wrapper,trigger};
+  profileSelectControls.push(control);
+  return control;
+}
 profileQuestions.forEach(enhanceProfileSelect);document.addEventListener('click',event=>{if(!event.target.closest('.custom-select'))closeProfileSelects()});
 function setProfileQuestionState(enabled){profileCreationFields.forEach(input=>{input.disabled=!enabled;input.required=enabled});profileSelectControls.forEach(control=>{control.trigger.disabled=!enabled;control.wrapper.classList.toggle('disabled',!enabled)})}
 const phoneProfile=document.createElement('button');phoneProfile.type='button';phoneProfile.className='phone-profile';phoneProfile.setAttribute('aria-label','Open profile menu');phoneProfile.textContent='NM';document.querySelector('.header-actions').append(phoneProfile);
@@ -23,7 +102,7 @@ function saveNutrition(){const user=sessionStorage.getItem('nutriq-user');if(use
 function loadNutrition(user){dailyGoal=Number(localStorage.getItem(goalKey(user)))||2100;try{nutrition=JSON.parse(localStorage.getItem(dailyKey(user)))||{kcal:0,protein:0,carbs:0,fats:0}}catch{nutrition={kcal:0,protein:0,carbs:0,fats:0}}renderNutrition();loadCustomMeals(user)}
 function renderNutrition(){const percent=Math.min(100,Math.round(nutrition.kcal/dailyGoal*100));document.getElementById('kcalValue').textContent=nutrition.kcal.toLocaleString();document.getElementById('goalBadge').textContent=`${percent}% of goal`;document.getElementById('energyProgress').style.width=`${percent}%`;document.getElementById('energyLeft').textContent=`${Math.max(0,dailyGoal-nutrition.kcal).toLocaleString()} kcal left for today`;document.getElementById('proteinValue').textContent=`${nutrition.protein}g`;document.getElementById('carbsValue').textContent=`${nutrition.carbs}g`;document.getElementById('fatsValue').textContent=`${nutrition.fats}g`;document.getElementById('proteinPercent').textContent=`${Math.round(nutrition.protein/130*100)}%`;document.getElementById('carbsPercent').textContent=`${Math.round(nutrition.carbs/250*100)}%`;document.getElementById('fatsPercent').textContent=`${Math.round(nutrition.fats/70*100)}%`;const remainingProtein=Math.max(0,130-nutrition.protein);document.querySelector('.tip-card>p:not(.eyebrow)').textContent=remainingProtein?`You are ${remainingProtein}g away from your goal. Greek yogurt makes an easy win.`:'You reached your protein goal. Great work today.'}
 function resetNutrition(){nutrition={kcal:0,protein:0,carbs:0,fats:0};detectedMeal=null;const user=sessionStorage.getItem('nutriq-user');if(user)localStorage.removeItem(customMealsKey(user));document.querySelectorAll('.custom-meal').forEach(card=>card.remove());saveNutrition();renderNutrition()}
-function openAuth(mode='signin'){creating=mode==='create';profileSetup.hidden=!creating;setProfileQuestionState(creating);authKicker.textContent=creating?'START YOUR JOURNEY':'WELCOME BACK';authTitle.textContent=creating?'Create your account':'Sign in to Nutriq';authCopy.textContent=creating?'Tell us a little about your routine so Nutriq can be more personal.':'Your food, made simpler.';authSubmit.textContent=creating?'Create account':'Sign in';authSwitch.innerHTML=creating?'Already a member? <b>Sign in</b>':'New here? <b>Create an account</b>';auth.classList.add('open');auth.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('usernameInput').focus(),80)}
+function openAuth(mode='signin'){creating=mode==='create';closeProfileSelects();profileSetup.hidden=!creating;setProfileQuestionState(creating);authKicker.textContent=creating?'START YOUR JOURNEY':'WELCOME BACK';authTitle.textContent=creating?'Create your account':'Sign in to Nutriq';authCopy.textContent=creating?'Tell us a little about your routine so Nutriq can be more personal.':'Your food, made simpler.';authSubmit.textContent=creating?'Create account':'Sign in';authSwitch.innerHTML=creating?'Already a member? <b>Sign in</b>':'New here? <b>Create an account</b>';auth.classList.add('open');auth.setAttribute('aria-hidden','false');auth.scrollTop=0;if(window.innerWidth>760)setTimeout(()=>document.getElementById('usernameInput').focus(),80)}
 function closeAuth(){if(!sessionStorage.getItem('nutriq-signed-in')){location.href='index.html';return}auth.classList.remove('open');auth.setAttribute('aria-hidden','true')}
 document.getElementById('menuBtn').addEventListener('click',()=>{sidebar.classList.add('open');overlay.classList.add('show')});overlay.addEventListener('click',closeMenu);
 document.querySelectorAll('.nav-link').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));link.classList.add('active');document.getElementById('pageLabel').textContent=link.dataset.label;showAppView({'#calories':'calories','#planner':'meals','#photoMeal':'photos','#chef':'chef','#recipes':'ideas','#favorites':'saved'}[link.getAttribute('href')]||'calories');closeMenu()}));

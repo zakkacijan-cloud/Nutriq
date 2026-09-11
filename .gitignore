@@ -4,3 +4,6 @@ nutriq-*.png
 # Local editor and operating-system files
 .DS_Store
 Thumbs.db
+
+# Local Netlify folder
+.netlify
